@@ -23,9 +23,9 @@ class Comment(BaseModel):
 class Task(BaseModel):
     name: str
     priority: conint(ge=1, le=4)
-    author: User
 
     description: str = None
+    author: User = None
     responsible: User = None
     date: TaskDate = None
     comments: list[Comment] = []
