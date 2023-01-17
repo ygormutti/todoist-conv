@@ -2,7 +2,6 @@ import xml.etree.ElementTree as ET
 
 from datetime import datetime
 from io import BytesIO
-# from yaml import dump
 
 from todoist_conv.formats.base import Format
 from todoist_conv.model import Project, Task
@@ -38,7 +37,7 @@ def build_head(opml, title):
     dateCreated.text = datetime.now().isoformat()
 
 
-def build_body(opml, project):
+def build_body(opml, project: Project):
     body = ET.SubElement(opml, "body")
 
     project_outline = build_outline(body, project.name)
@@ -57,6 +56,8 @@ def build_outline(parent, text, description=None):
 
 
 def build_task_outlines(parent: ET.Element, task: Task):
-    task_elem = build_outline(parent, task.name, task.description)
+    task_elem = build_outline(
+        parent, task.name, task.copy(exclude={"subtasks"}, deep=True).json()
+    )
     for subtask in task.subtasks:
         build_task_outlines(task_elem, subtask)
