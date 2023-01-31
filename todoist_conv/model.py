@@ -36,6 +36,10 @@ class Section(BaseModel):
     name: str = None
     tasks: list[Task] = []
 
+    @property
+    def isdefault(self):
+        return not self.name
+
 
 class Project(BaseModel):
     name: str

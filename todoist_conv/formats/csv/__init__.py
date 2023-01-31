@@ -11,4 +11,4 @@ class TodoistCsvFormat(Format):
         return parse(path)
 
     def serialize(self, project: Project) -> str:
-        raise serialize(project)
+        return serialize(project)
