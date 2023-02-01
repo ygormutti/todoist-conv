@@ -8,10 +8,7 @@ from todoist_conv.model import Project, Section, Task, User
 
 def serialize(project: Project) -> bytes:
     buffer = StringIO(newline="")
-    dw = DictWriter(
-        buffer,
-        FIELDNAMES,
-    )
+    dw = DictWriter(buffer, FIELDNAMES)
     dw.writeheader()
     write_sections(dw, project.sections)
     return buffer.getvalue().encode(ENCODING)
