@@ -22,7 +22,7 @@ def write_sections(dw: DictWriter, sections: List[Section]):
         if section.isdefault:
             continue
 
-        dw.writerow(CsvRowFormat(TYPE="section").dict())
+        dw.writerow(CsvRowFormat(TYPE="section", CONTENT=section.name).dict())
         write_tasks(dw, section.tasks)
 
 
