@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "todoist-conv"
-version = "0.1.2"
+version = "0.1.3"
 description = "Convert Todoist generated CSVs to/from other formats"
 authors = ["Ygor Mutti <ygormutti@gmail.com>"]
 license = "MIT"
@@ -10,7 +10,7 @@ readme = "README.md"
 todoist-conv = 'todoist_conv.cli:cli'
 
 [tool.poetry.dependencies]
-python = "3.10.4"
+python = "^3.9"
 click = "^8.1.3"
 pydantic = "^1.9.1"
 chardet = "^5.1.0"
