@@ -40,7 +40,7 @@ def parse_tasks(task_elems: list[ET.Element]) -> list[Task]:
     tasks = []
     for task_elem in task_elems:
         subtasks = parse_tasks(get_children(task_elem))
-        task_json = task_elem.get("description")
+        task_json = task_elem.get("description") or task_elem.get("note")
         task = Task.parse_raw(task_json) if task_json else Task(name="", priority=4)
 
         task.name = get_name(task_elem)

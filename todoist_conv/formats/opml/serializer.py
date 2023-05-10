@@ -46,6 +46,7 @@ def build_outline(parent, text, description=None):
     outline = ET.SubElement(parent, "outline", text=text)
     if description:
         outline.attrib["description"] = description
+        outline.attrib["note"] = description
     return outline
 
 
