@@ -15,7 +15,7 @@ def serialize(project: Project) -> bytes:
 
 
 def write_sections(dw: DictWriter, sections: List[Section]):
-    default_section = next(s for s in sections if s.isdefault)
+    default_section = next((s for s in sections if s.isdefault), Section())
     write_tasks(dw, default_section.tasks)
 
     for section in sections:
