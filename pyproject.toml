@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "todoist-conv"
-version = "0.1.4"
+version = "0.1.5"
 description = "Convert Todoist generated CSVs to/from other formats"
 authors = ["Ygor Mutti <ygormutti@gmail.com>"]
 license = "MIT"
