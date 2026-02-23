@@ -41,8 +41,8 @@ def parse_sections(reader: DictReader):
                     priority=row.PRIORITY,
                     author=parse_user(row.AUTHOR),
                     responsible=parse_user(row.RESPONSIBLE),
-                    date=parse_task_date(row, 'DATE'),
-                    deadline=parse_task_date(row, 'DEADLINE'),
+                    date=parse_task_date(row, "DATE"),
+                    deadline=parse_task_date(row, "DEADLINE"),
                     duration=parse_duration(row),
                     timezone=row.TIMEZONE,
                 )
@@ -84,7 +84,7 @@ def parse_task_date(row: CsvRowFormat, date_field: str):
 def parse_duration(row: CsvRowFormat):
     if row.DURATION is None:
         return
-    
+
     assert row.DURATION_UNIT == "minute"
 
     return timedelta(minutes=row.DURATION)
