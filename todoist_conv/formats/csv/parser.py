@@ -1,6 +1,6 @@
 import re
 from csv import DictReader
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 from todoist_conv.formats.csv.common import FIELDNAMES, CsvRowFormat
@@ -29,7 +29,10 @@ def parse_sections(reader: DictReader):
 
         match row.TYPE:
             case "section":
-                section = Section(name=row.CONTENT)
+                section = Section(
+                    name=row.CONTENT,
+                    is_collapsed=row.IS_COLLAPSED,
+                )
                 state.handle_section(section)
             case "task":
                 task = Task(
@@ -38,7 +41,10 @@ def parse_sections(reader: DictReader):
                     priority=row.PRIORITY,
                     author=parse_user(row.AUTHOR),
                     responsible=parse_user(row.RESPONSIBLE),
-                    date=parse_task_date(row),
+                    date=parse_task_date(row, 'DATE'),
+                    deadline=parse_task_date(row, 'DEADLINE'),
+                    duration=parse_duration(row),
+                    timezone=row.TIMEZONE,
                 )
                 state.handle_task(task, int(row.INDENT))
             case "note":
@@ -65,15 +71,23 @@ def parse_user(user: str):
     return User(**m.groupdict())
 
 
-def parse_task_date(row: CsvRowFormat):
-    if row.DATE is None:
+def parse_task_date(row: CsvRowFormat, date_field: str):
+    if getattr(row, date_field) is None:
         return
 
     return TaskDate(
-        description=row.DATE,
-        lang=row.DATE_LANG,
-        timezone=row.TIMEZONE,
+        description=getattr(row, date_field),
+        lang=getattr(row, f"{date_field}_LANG"),
     )
+
+
+def parse_duration(row: CsvRowFormat):
+    if row.DURATION is None:
+        return
+    
+    assert row.DURATION_UNIT == "minute"
+
+    return timedelta(minutes=row.DURATION)
 
 
 def parse_iso_dt(dt_str: str):

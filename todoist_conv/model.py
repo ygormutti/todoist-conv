@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from pydantic import BaseModel, conint
 
@@ -11,7 +11,6 @@ class User(BaseModel):
 class TaskDate(BaseModel):
     description: str
     lang: str
-    timezone: str
 
 
 class Comment(BaseModel):
@@ -28,12 +27,16 @@ class Task(BaseModel):
     author: User = None
     responsible: User = None
     date: TaskDate = None
+    deadline: TaskDate = None
+    duration: timedelta = None
+    timezone: str = None
     comments: list[Comment] = []
     subtasks: list["Task"] = []
 
 
 class Section(BaseModel):
     name: str = None
+    is_collapsed: bool = False
     tasks: list[Task] = []
 
     @property
