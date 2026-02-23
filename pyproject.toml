@@ -3,12 +3,11 @@ name = "todoist-conv"
 version = "0.1.5"
 description = "Convert Todoist generated CSVs to/from other formats"
 authors = [{ name = "Ygor Mutti", email = "ygormutti@gmail.com" }]
-requires-python = ">=3.9,<4"
+requires-python = ">=3.10,<4"
 readme = "README.md"
 license = "MIT"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -27,12 +26,9 @@ todoist-conv = "todoist_conv.cli:cli"
 [dependency-groups]
 dev = [
     "rope>=1.2.0,<2",
-    "flake8>=6.0.0,<7",
-    "black>=22.6.0,<23",
     "pytest>=7.1.2,<8",
-    "isort>=5.10.1,<6",
-    "Flake8-pyproject>=1.2.1,<2",
     "syrupy>=4.9.1",
+    "ruff>=0.15.2",
 ]
 
 [build-system]
@@ -43,5 +39,3 @@ build-backend = "uv_build"
 module-name = "todoist_conv"
 module-root = ""
 
-[tool.flake8]
-max-line-length = 88
