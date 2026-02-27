@@ -1,6 +1,8 @@
 __pycache__
+dist
+.ruff_cache
 
 # LibreOffice backup files
 .~*
 
-dist
+.vscode
