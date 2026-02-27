@@ -1,3 +1,4 @@
+from enum import Enum
 from datetime import datetime, timedelta
 
 from pydantic import BaseModel, conint
@@ -44,7 +45,17 @@ class Section(BaseModel):
         return not self.name
 
 
+class ProjectViewStyle(str, Enum):
+    LIST = "list"
+    BOARD = "board"
+
+
 class Project(BaseModel):
     name: str
+    view_style: ProjectViewStyle = ProjectViewStyle.LIST
 
     sections: list[Section] = []
+
+    @property
+    def meta(self) -> dict[str, str]:
+        return {"view_style": self.view_style.value}

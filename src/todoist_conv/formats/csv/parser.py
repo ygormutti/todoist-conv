@@ -1,3 +1,4 @@
+from todoist_conv.model import ProjectViewStyle
 import re
 from csv import DictReader
 from datetime import datetime, timedelta
@@ -11,15 +12,14 @@ def parse(path: Path) -> Project:
     with open(path, newline="", encoding="utf-8-sig") as fp:
         reader = DictReader(fp, FIELDNAMES, "rest")
         next(reader)  # skip first row with field names
-        sections = parse_sections(reader)
-
-    return Project(name=path.stem, sections=sections)
+        return parse_project(path.stem, reader)
 
 
-def parse_sections(reader: DictReader):
+def parse_project(name, reader: DictReader):
     default_section = Section()
     state = ParserStateMachine(default_section)
 
+    view_style = Project.__fields__["view_style"].default
     for row_dict in reader:
         if "rest" in row_dict:
             raise Exception(f"row {reader.line_num} has unknown format")
@@ -28,6 +28,9 @@ def parse_sections(reader: DictReader):
         row = CsvRowFormat(**non_empty_fields)
 
         match row.TYPE:
+            case "meta":
+                # FIXME meta field separator is unknown, docs only mention view_style
+                view_style = ProjectViewStyle(row.CONTENT.split("=")[1])
             case "section":
                 section = Section(
                     name=row.CONTENT,
@@ -57,7 +60,7 @@ def parse_sections(reader: DictReader):
             case "":
                 continue  # ignore separator
 
-    return state.sections
+    return Project(name=name, sections=state.sections, view_style=view_style)
 
 
 USER_RE = re.compile(r"(?P<username>.*?) \((?P<id>.*?)\)")

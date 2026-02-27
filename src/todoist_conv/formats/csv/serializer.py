@@ -10,20 +10,44 @@ def serialize(project: Project) -> bytes:
     buffer = StringIO(newline="")
     dw = DictWriter(buffer, FIELDNAMES)
     dw.writeheader()
+    write_meta(dw, project)
     write_sections(dw, project.sections)
-    return buffer.getvalue().encode(ENCODING)
+    return buffer.getvalue().rstrip("\r\n").encode(ENCODING)
+
+
+def write_meta(dw: DictWriter, project: Project):
+    dw.writerow(
+        CsvRowFormat(
+            TYPE="meta",
+            # FIXME separator is unknown, docs only mention view_style
+            CONTENT="".join(f"{k}={v}" for k, v in project.meta.items()),
+        ).dict()
+    )
+    write_separator(dw)
+
+
+def write_separator(dw: DictWriter):
+    dw.writerow({})
 
 
 def write_sections(dw: DictWriter, sections: List[Section]):
     default_section = next((s for s in sections if s.isdefault), Section())
     write_tasks(dw, default_section.tasks)
+    if not sections:
+        return
 
+    write_separator(dw)
     for section in sections:
         if section.isdefault:
             continue
 
-        dw.writerow(CsvRowFormat(TYPE="section", CONTENT=section.name).dict())
+        dw.writerow(
+            CsvRowFormat(
+                TYPE="section", CONTENT=section.name, IS_COLLAPSED=section.is_collapsed
+            ).dict()
+        )
         write_tasks(dw, section.tasks)
+        write_separator(dw)
 
 
 def write_tasks(dw: DictWriter, tasks: List[Task], indent: int = 1):
@@ -42,7 +66,9 @@ def write_task(dw: DictWriter, task: Task, indent: int):
         RESPONSIBLE=serialize_user(task.responsible),
         DATE=task.date and task.date.description,
         DATE_LANG=task.date and task.date.lang,
-        TIMEZONE=task.date and task.date.timezone,
+        DURATION=task.duration and task.duration.total_seconds() // 60,
+        DURATION_UNIT=task.duration and "minute",
+        TIMEZONE=task.timezone,
     )
     dw.writerow(row.dict())
 
@@ -55,7 +81,6 @@ def write_task(dw: DictWriter, task: Task, indent: int):
         )
         dw.writerow(comment_row.dict())
 
-    dw.writerow({})  # separator
     write_tasks(dw, task.subtasks, indent + 1)
 
 
