@@ -1,6 +1,6 @@
 [project]
 name = "todoist-conv"
-version = "0.1.5"
+version = "0.1.6"
 description = "Convert Todoist generated CSVs to/from other formats"
 authors = [{ name = "Ygor Mutti", email = "ygormutti@gmail.com" }]
 requires-python = ">=3.10,<4"
@@ -34,8 +34,4 @@ dev = [
 [build-system]
 requires = ["uv_build>=0.8.17,<0.9.0"]
 build-backend = "uv_build"
-
-[tool.uv.build-backend]
-module-name = "todoist_conv"
-module-root = ""
 
